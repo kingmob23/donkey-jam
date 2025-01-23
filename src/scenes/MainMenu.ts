@@ -3,8 +3,9 @@ import { GameObjects, Scene } from 'phaser';
 export class MainMenu extends Scene
 {
     background: GameObjects.Image;
-    logo: GameObjects.Image;
     title: GameObjects.Text;
+    artist: GameObjects.Text;
+    caption: GameObjects.Text;
 
     constructor ()
     {
@@ -21,8 +22,14 @@ export class MainMenu extends Scene
             align: 'center'
         }).setOrigin(0.5);
 
-        this.title = this.add.text(512, 460, 'Art by Shyphu <3', {
+        this.artist = this.add.text(512, 460, 'Art by Shyphu <3', {
             fontFamily: 'Arial Black', fontSize: 100, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        }).setOrigin(0.5);
+
+        this.caption = this.add.text(512, 560, '(coming soon)', {
+            fontFamily: 'Arial Black', fontSize: 34, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
