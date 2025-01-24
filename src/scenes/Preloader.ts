@@ -33,9 +33,13 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         this.load.image('game-background', 'background.png');
+        this.load.audio('sountrack', 'lenya_bangs.mp3');
+
         this.load.image('player', 'monke.png');
         this.load.image('ak', 'ak.png');
+        this.load.image('bang', 'bang.png');
         this.load.audio('shot', 'gunshot.mp3');
+
         this.load.image('second-dude', 'gom.png');
     }
 
