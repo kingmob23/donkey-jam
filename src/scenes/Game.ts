@@ -43,13 +43,12 @@ export class Game extends Scene
         this.bang = this.add.image(this.player.x, this.player.y, 'bang');
         this.bang.setScale(0.3);
         this.bang.setAlpha(0);
+        this.shot = this.sound.add('shot');
 
         this.second_dude = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 100, 'second-dude');
 
-        this.shot = this.sound.add('shot');
-
-        this.cursors = this.input.keyboard.createCursorKeys();
-        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.cursors = this.input.keyboard!.createCursorKeys();
+        this.spacebar = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.input.once('pointerdown', () => {
             this.scene.start('GameOver');
