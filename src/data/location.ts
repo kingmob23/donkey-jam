@@ -3,6 +3,7 @@ type ObjectType =
     'trap' |
     'pile' |
     'steam_turbine' |
+    'train_platform' |
     'decoration';
 
 type EnemyType = 'raider'
