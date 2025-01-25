@@ -1,19 +1,16 @@
-type ObjectType = 
-    'health_potion' | 
-    'scrap' | 
-    'trap' | 
-    'trash' | 
-    'key' | 
-    'pile' | 
-    'steam_turbine' | 
+type ObjectType =
+    'beer' |
+    'trap' |
+    'pile' |
+    'steam_turbine' |
     'decoration';
 
-type EnemyType = 'raider' | 'zombie' | 'mutant';
-type PileDrop = 'useless' | 'fuel' | 'wire' | 'steam_pipe' | 'magnet' | 'membrane' | 'amplifier';
+type EnemyType = 'raider'
+type PileDrop = 'trash' | 'fuel' | 'wire' | 'steam_pipe' | 'magnet' | 'membrane' | 'amplifier';
 
 interface GameObject {
     id: number;
-    type: ObjectType; 
+    type: ObjectType;
     x: number;
     rare: string;
     drop?: PileDrop[];
@@ -21,9 +18,9 @@ interface GameObject {
 
 interface Enemy {
     id: number;
-    type: EnemyType; 
-    x: number;    
-    health: number; 
+    type: EnemyType;
+    x: number;
+    health: number;
 }
 
 interface GameLocation {
@@ -32,7 +29,6 @@ interface GameLocation {
     type: 'scrapyard' | 'town';
     objects: GameObject[];
     enemies: Enemy[];
-    // Removed ancestorOrigins to avoid conflict
 }
 
 const locations: GameLocation[] = [
@@ -41,15 +37,13 @@ const locations: GameLocation[] = [
         name: 'Scrapyard',
         type: 'scrapyard',
         objects: [
-            { id: 1, type: 'health_potion', x: 100, rare: 'common' },
-            { id: 2, type: 'scrap', x: 200, rare: 'common' },
-            { id: 3, type: 'trap', x: 150, rare: 'common' },
-            { id: 4, type: 'pile', x: 250, rare: 'common', drop: ['useless', 'fuel', 'wire'] },
-            { id: 5, type: 'steam_turbine', x: 300, rare: 'rare' }
+            { id: 1, type: 'beer', x: 100, rare: 'common' },
+            { id: 2, type: 'trap', x: 150, rare: 'common' },
+            { id: 3, type: 'pile', x: 250, rare: 'common', drop: ['trash', 'fuel', 'wire'] },
+            { id: 4, type: 'steam_turbine', x: 300, rare: 'rare' }
         ],
         enemies: [
             { id: 1, type: 'raider', x: 300, health: 100 },
-            { id: 2, type: 'zombie', x: 500, health: 150 }
         ]
     },
     {
@@ -57,16 +51,12 @@ const locations: GameLocation[] = [
         name: 'Town',
         type: 'town',
         objects: [
-            { id: 6, type: 'health_potion', x: 400, rare: 'common' },
+            { id: 6, type: 'beer', x: 400, rare: 'common' },
             { id: 7, type: 'decoration', x: 600, rare: 'common' }
         ],
-        enemies: [
-            { id: 3, type: 'zombie', x: 700, health: 150 },
-            { id: 4, type: 'mutant', x: 900, health: 200 }
-        ]
+        enemies: []
     }
 ];
-
 
 const getEnemiesInRange = (locationId: number, rangeStart: number, rangeEnd: number): Enemy[] => {
     const location = locations.find(loc => loc.id === locationId);
@@ -74,7 +64,6 @@ const getEnemiesInRange = (locationId: number, rangeStart: number, rangeEnd: num
     return location.enemies.filter(enemy => enemy.x >= rangeStart && enemy.x <= rangeEnd);
 };
 
-// Example: Get enemies between coordinates 200 and 600 in Scrapyard
 console.log(getEnemiesInRange(1, 200, 600));
 
 const addObjectToLocation = (locationId: number, object: GameObject): void => {
@@ -84,7 +73,6 @@ const addObjectToLocation = (locationId: number, object: GameObject): void => {
     }
 };
 
-// Example of adding a new object
 addObjectToLocation(1, { id: 8, type: 'pile', x: 350, rare: 'common', drop: ['magnet', 'membrane', 'amplifier'] });
 
 const removeObjectFromLocation = (locationId: number, objectId: number): void => {
@@ -94,5 +82,4 @@ const removeObjectFromLocation = (locationId: number, objectId: number): void =>
     }
 };
 
-// Example of removing an object
-removeObjectFromLocation(1, 1); // Removes the object with id = 1 from Scrapyard
+removeObjectFromLocation(1, 1);
