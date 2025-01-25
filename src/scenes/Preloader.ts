@@ -29,7 +29,6 @@ export class Preloader extends Scene
 
     preload ()
     {
-        //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
 
         this.load.image('game-background', 'background.png');
@@ -41,6 +40,8 @@ export class Preloader extends Scene
         this.load.audio('shot', 'gunshot.mp3');
 
         this.load.image('second-dude', 'gom.png');
+
+        this.load.image('pile', 'pile.png');
     }
 
     create ()
