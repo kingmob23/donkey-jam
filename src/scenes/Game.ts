@@ -27,6 +27,8 @@ export class Game extends Scene
 
     create ()
     {
+        this.sound.setVolume(0.1);
+
         this.camera = this.cameras.main;
 
         this.background = this.add.image(0, 0, 'game-background');
