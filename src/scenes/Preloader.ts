@@ -38,8 +38,13 @@ export class Preloader extends Scene {
         this.load.image('player', 'monke.png');
         this.load.image('ak', 'ak.png');
         this.load.image('bang', 'bang.png');
-        this.load.image('second-dude', 'gom.png');
+
+        this.load.image('enemy', 'gom.png');
+
         this.load.image('pile', 'pile.png');
+        this.load.image('pile2', 'pile2.png');
+        this.load.image('pile3', 'pile3.png');
+
         this.load.image('ebalo', 'UI_mc_healty.png');
         this.load.image('ebalored', 'UI_mc_healtyred.png');
         this.load.image('ebalodmg1', 'UI_mc_owtch1.png');
