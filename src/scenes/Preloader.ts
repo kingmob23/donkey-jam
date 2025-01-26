@@ -45,12 +45,12 @@ export class Preloader extends Scene {
         this.load.image('pile2', 'pile2.png');
         this.load.image('pile3', 'pile3.png');
 
-        this.load.image('ebalo', 'UI_mc_healty.png');
-        this.load.image('ebalored', 'UI_mc_healtyred.png');
-        this.load.image('ebalodmg1', 'UI_mc_owtch1.png');
-        this.load.image('ebalodmg2', 'UI_mc_owtch2.png');
-        this.load.image('ebalodmg3', 'UI_mc_owtch3.png');
-        this.load.image('ebalodead', 'UI_mc_dead.png');
+        this.load.image('healthy', 'UI/monkey/healthy.png');
+        this.load.image('red', 'UI/monkey/red.png');
+        this.load.image('owtch1', 'UI/monkey/owtch1.png');
+        this.load.image('owtch2', 'UI/monkey/owtch2.png');
+        this.load.image('owtch3', 'UI/monkey/owtch3.png');
+        this.load.image('dead', 'UI/monkey/dead.png');
 
         // Предзагрузка аудио
         this.load.audio('sountrack', 'lenya_bangs.mp3');

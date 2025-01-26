@@ -1,7 +1,7 @@
 // src/scenes/Game.ts
 import { Scene } from 'phaser';
-import { Player } from '../objects/Player';
 import { Enemy } from '../objects/Enemy';
+import { Player } from '../objects/Player';
 
 export class Game extends Scene {
     // Существующие свойства
@@ -46,23 +46,7 @@ export class Game extends Scene {
         this.pile.setScale(0.25);
         this.pile.setDepth(1);
 
-        // Создание изображений ebalo
-        this.ebaloImages = [
-            this.add.image(50, 50, 'ebalo'),
-            this.add.image(50, 50, 'ebalored'),
-            this.add.image(50, 50, 'ebalodmg1'),
-            this.add.image(50, 50, 'ebalodmg2'),
-            this.add.image(50, 50, 'ebalodmg3'),
-            this.add.image(50, 50, 'ebalodead')
-        ];
-
-        // Скрываем все изображения ebalo
-        this.ebaloImages.forEach(img => {
-            img.setVisible(false);
-            img.setScale(0.5);
-        });
-
-        this.player = new Player(this, this.cameras.main.width + 100, this.cameras.main.height - 150, this.ebaloImages);
+        this.player = new Player(this, this.cameras.main.width + 100, this.cameras.main.height - 150);
 
         this.enemy = new Enemy(this, this.cameras.main.width - 100, this.cameras.main.height - 100, this.player);
 

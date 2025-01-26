@@ -20,8 +20,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.attackCooldown = 2000; // Время между атаками в миллисекундах
         this.lastAttackTime = 0;
 
-        this.setScale(0.5); // Масштабируем врага
-        this.setDepth(2); // Устанавливаем глубину для отображения
+        this.setDepth(2);
         scene.add.existing(this);
 
         // Создаем изображение для эффекта выстрела

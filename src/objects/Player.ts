@@ -1,24 +1,22 @@
 // src/objects/Player.ts
-import Phaser from 'phaser';
+import { Scene } from 'phaser';
+import { MonkeyState } from './MonkeyState';
 
 export class Player extends Phaser.GameObjects.Image {
-    private health: number = 100; // Здоровье игрока
     private speed: number = 300;
-    private flashInterval: number = 200;
-    private flashTimer: number = 0;
     private shot: Phaser.Sound.BaseSound;
     private bang: Phaser.GameObjects.Image;
-    private canHitEnemy: boolean = true;
+    private ak: Phaser.GameObjects.Image;
 
-    // Свойства для отслеживания ударов
+    private flashInterval: number = 200;
+    private flashTimer: number = 0;
+
+    private canHitEnemy: boolean = true;
+    private monkeyState: MonkeyState;
     private hitCount: number = 0;
     private maxHitsBeforeDeath: number = 5;
 
-    // Ссылки на изображения ebalo
-    private ebaloImages: Phaser.GameObjects.Image[];
-    private currentEbaloIndex: number = 0;
-
-    constructor(scene: Phaser.Scene, x: number, y: number, ebaloImages: Phaser.GameObjects.Image[]) {
+    constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'player');
         this.setScale(0.3);
         this.setDepth(2);
@@ -28,16 +26,17 @@ export class Player extends Phaser.GameObjects.Image {
         this.bang.setScale(0.3);
         this.bang.setAlpha(0);
         this.bang.setDepth(4);
+
+        this.ak = scene.add.image(this.x, this.y, 'ak');
+        this.ak.setScale(0.3);
+        this.ak.setDepth(4);
+
         this.shot = scene.sound.add('shot');
 
-        this.ebaloImages = ebaloImages;
-        this.currentEbaloIndex = 0;
-        // Удаляем смену изображений
-        // this.ebaloImages[this.currentEbaloIndex].setVisible(true);
+        this.monkeyState = new MonkeyState(scene, 80, 80);
     }
 
     update(delta: number, bounds: { minX: number, maxX: number, minY: number, maxY: number }) {
-        // Обработка движения игрока
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT).isDown) {
             const newX = this.x - this.speed * delta / 1000;
             if (newX >= bounds.minX) {
@@ -63,41 +62,24 @@ export class Player extends Phaser.GameObjects.Image {
             }
         }
 
-        // Обновление позиции bang
         this.bang.x = this.x - 200;
         this.bang.y = this.y - 40;
 
-        // Удаляем смену изображений
-        // this.changeEbaloImage();
+        this.ak.x = this.x - 200;
+        this.ak.y = this.y - 40;
+
     }
 
     public getBangPosition(): { x: number, y: number } {
-        return { x: this.x - 200, y: this.y - 40 };
+        return { x: this.bang.x, y: this.bang.y };
     }
 
     public handleEnemyAttack() {
-        // Обработка атаки врага
-        this.hitCount++;
-        if (this.hitCount >= this.maxHitsBeforeDeath) {
-            this.die();
+        if (this.monkeyState.nextState()) {
+            this.setVisible(false);
+            this.bang.setVisible(false);
+            this.ak.setVisible(false);
+            this.emit('playerDead');
         }
-        // Удаляем смену изображений
-        // else {
-        //     this.changeEbaloImage();
-        // }
     }
-
-    private die() {
-        // Логика смерти игрока
-        this.setVisible(false);
-        this.emit('playerDead');
-    }
-
-    // Удаляем метод changeEbaloImage
-    // private changeEbaloImage() {
-    //     // Изменение изображения ebalo
-    //     this.ebaloImages[this.currentEbaloIndex].setVisible(false);
-    //     this.currentEbaloIndex = (this.currentEbaloIndex + 1) % this.ebaloImages.length;
-    //     this.ebaloImages[this.currentEbaloIndex].setVisible(true);
-    // }
 }
