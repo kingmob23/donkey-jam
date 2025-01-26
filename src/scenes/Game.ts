@@ -1,16 +1,17 @@
 import { Scene } from 'phaser';
+import { Pile } from '../objects/Pile';
 import { Player } from '../objects/Player';
 
 export class Game extends Scene {
-    private pile_hit: number = 5;
     private canHitPile: boolean = true;
+    private destroyedPiles: number = 0;
+    private piles: Pile[] = [];
 
     private soundtrack: Phaser.Sound.BaseSound;
+
     private messageTimer: number = 0;
     private readonly messageDisplayTime: number = 3000;
-    private destroyedPiles: number = 0;
 
-    // Slideshow properties
     private slides: Phaser.GameObjects.Image[] = [];
     private slidesContainer: Phaser.GameObjects.Container;
     private currentIndex: number = 0;
@@ -20,7 +21,6 @@ export class Game extends Scene {
     private background: Phaser.GameObjects.Image;
     private player: Player;
     private enemy: Phaser.GameObjects.Image;
-    private piles: Phaser.GameObjects.Image[] = [];
     private msg_text: Phaser.GameObjects.Text;
 
     constructor() {
@@ -39,15 +39,13 @@ export class Game extends Scene {
         this.soundtrack = this.sound.add('sountrack');
         this.soundtrack.play({ loop: true, volume: 0.1 });
 
-        this.piles = [
-            this.add.image(Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), 'pile'),
-            this.add.image(Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), 'pile2'),
-            this.add.image(Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), 'pile3')
-        ];
-        this.piles.forEach(pile => {
-            pile.setScale(0.25);
-            pile.setDepth(1);
-        });
+        // Create piles
+        for (let i = 0; i < 3; i++) {
+            this.piles.push(new Pile(this, {
+                width: this.cameras.main.width,
+                height: this.cameras.main.height
+            }));
+        }
 
         this.player = new Player(
             this,
@@ -90,17 +88,20 @@ export class Game extends Scene {
             const bangPos = this.player.getBangPosition();
 
             // Check each pile for hits
-            this.piles.forEach((pile, _) => {
-                if (pile.visible &&
-                    (bangPos.x - 100 <= pile.x && pile.x <= bangPos.x + 100) &&
-                    (bangPos.y - 100 <= pile.y && pile.y <= bangPos.y + 100)
-                ) {
-                    pile.setVisible(false);
-                    this.destroyedPiles++;
-                    this.msg_text.setText(`PILE DESTROYED ${this.destroyedPiles}`);
-                    this.msg_text.setVisible(true);
-                    this.msg_text.setAlpha(1);
-                    this.messageTimer = 0;
+            this.piles.forEach(pile => {
+                if (pile.isVisible()) {
+                    const pilePos = pile.getPosition();
+                    if ((bangPos.x - 100 <= pilePos.x && pilePos.x <= bangPos.x + 100) &&
+                        (bangPos.y - 100 <= pilePos.y && pilePos.y <= bangPos.y + 100)
+                    ) {
+                        if (pile.hit()) {  // Returns true if pile was destroyed
+                            this.destroyedPiles++;
+                            this.msg_text.setText(`PILE DESTROYED ${this.destroyedPiles}`);
+                            this.msg_text.setVisible(true);
+                            this.msg_text.setAlpha(1);
+                            this.messageTimer = 0;
+                        }
+                    }
                 }
             });
             this.canHitPile = false;
