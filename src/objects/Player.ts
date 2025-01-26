@@ -1,107 +1,103 @@
-import { Scene } from 'phaser';
+// src/objects/Player.ts
+import Phaser from 'phaser';
 
-export class Player {
-    private readonly flashInterval: number = 200;
-    private flashTimer: number = 0;
-
+export class Player extends Phaser.GameObjects.Image {
+    private health: number = 100; // Здоровье игрока
     private speed: number = 300;
-    private sprite: Phaser.GameObjects.Image;
-    private ak: Phaser.GameObjects.Image;
-    private bang: Phaser.GameObjects.Image;
+    private flashInterval: number = 200;
+    private flashTimer: number = 0;
     private shot: Phaser.Sound.BaseSound;
+    private bang: Phaser.GameObjects.Image;
+    private canHitEnemy: boolean = true;
 
-    private readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-    private readonly spacebar: Phaser.Input.Keyboard.Key;
+    // Свойства для отслеживания ударов
+    private hitCount: number = 0;
+    private maxHitsBeforeDeath: number = 5;
 
-    constructor(scene: Scene, x: number, y: number) {
-        // Create player and its equipment
-        this.sprite = scene.add.image(x, y, 'player');
-        this.sprite.setScale(0.3);
-        this.sprite.setDepth(2);
+    // Ссылки на изображения ebalo
+    private ebaloImages: Phaser.GameObjects.Image[];
+    private currentEbaloIndex: number = 0;
 
-        this.ak = scene.add.image(x, y, 'ak');
-        this.ak.setScale(0.8);
-        this.ak.setRotation(0.1);
-        this.ak.setDepth(3);
+    constructor(scene: Phaser.Scene, x: number, y: number, ebaloImages: Phaser.GameObjects.Image[]) {
+        super(scene, x, y, 'player');
+        this.setScale(0.3);
+        this.setDepth(2);
+        scene.add.existing(this);
 
-        this.bang = scene.add.image(x, y, 'bang');
+        this.bang = scene.add.image(this.x, this.y, 'bang');
         this.bang.setScale(0.3);
         this.bang.setAlpha(0);
         this.bang.setDepth(4);
-
-        // Setup controls
-        this.cursors = scene.input.keyboard!.createCursorKeys();
-        this.spacebar = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        // Setup sound
         this.shot = scene.sound.add('shot');
+
+        this.ebaloImages = ebaloImages;
+        this.currentEbaloIndex = 0;
+        // Удаляем смену изображений
+        // this.ebaloImages[this.currentEbaloIndex].setVisible(true);
     }
 
-    update(delta: number, bounds: { minX: number, maxX: number, minY: number, maxY: number }): boolean {
-        // Handle movement
-        if (this.cursors.left.isDown) {
-            const newX = this.sprite.x - this.speed * delta / 1000;
+    update(delta: number, bounds: { minX: number, maxX: number, minY: number, maxY: number }) {
+        // Обработка движения игрока
+        if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT).isDown) {
+            const newX = this.x - this.speed * delta / 1000;
             if (newX >= bounds.minX) {
-                this.sprite.x = newX;
+                this.x = newX;
             }
-        } else if (this.cursors.right.isDown) {
-            const newX = this.sprite.x + this.speed * delta / 1000;
+        }
+        if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT).isDown) {
+            const newX = this.x + this.speed * delta / 1000;
             if (newX <= bounds.maxX) {
-                this.sprite.x = newX;
+                this.x = newX;
             }
         }
-
-        if (this.cursors.up.isDown) {
-            const newY = this.sprite.y - this.speed * delta / 1000;
+        if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP).isDown) {
+            const newY = this.y - this.speed * delta / 1000;
             if (newY >= bounds.minY) {
-                this.sprite.y = newY;
+                this.y = newY;
             }
-        } else if (this.cursors.down.isDown) {
-            const newY = this.sprite.y + this.speed * delta / 1000;
+        }
+        if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN).isDown) {
+            const newY = this.y + this.speed * delta / 1000;
             if (newY <= bounds.maxY) {
-                this.sprite.y = newY;
+                this.y = newY;
             }
         }
 
-        // Update equipment positions
-        this.ak.x = this.sprite.x - 50;
-        this.ak.y = this.sprite.y + 10;
+        // Обновление позиции bang
+        this.bang.x = this.x - 200;
+        this.bang.y = this.y - 40;
 
-        this.bang.x = this.sprite.x - 200;
-        this.bang.y = this.sprite.y - 40;
+        // Удаляем смену изображений
+        // this.changeEbaloImage();
+    }
 
-        // Handle shooting
-        if (this.spacebar.isDown) {
-            if (!this.shot.isPlaying) {
-                this.shot.play({ volume: 0.3 });
-            } else {
-                this.shot.resume();
-            }
+    public getBangPosition(): { x: number, y: number } {
+        return { x: this.x - 200, y: this.y - 40 };
+    }
 
-            this.flashTimer += delta;
-            if (this.flashTimer >= this.flashInterval) {
-                const newAlpha = this.bang.alpha === 0 ? 1 : 0;
-                this.bang.setAlpha(newAlpha);
-                this.flashTimer = 0;
-                return newAlpha === 1; // Return true when bang appears
-            }
-        } else {
-            if (this.shot.isPlaying) {
-                this.shot.pause();
-            }
-            this.bang.setAlpha(0);
-            this.flashTimer = 0;
+    public handleEnemyAttack() {
+        // Обработка атаки врага
+        this.hitCount++;
+        if (this.hitCount >= this.maxHitsBeforeDeath) {
+            this.die();
         }
-
-        return false;
+        // Удаляем смену изображений
+        // else {
+        //     this.changeEbaloImage();
+        // }
     }
 
-    // Getters for position and bang position (useful for collision detection)
-    getBangPosition(): { x: number, y: number } {
-        return { x: this.bang.x, y: this.bang.y };
+    private die() {
+        // Логика смерти игрока
+        this.setVisible(false);
+        this.emit('playerDead');
     }
 
-    getPosition(): { x: number, y: number } {
-        return { x: this.sprite.x, y: this.sprite.y };
-    }
+    // Удаляем метод changeEbaloImage
+    // private changeEbaloImage() {
+    //     // Изменение изображения ebalo
+    //     this.ebaloImages[this.currentEbaloIndex].setVisible(false);
+    //     this.currentEbaloIndex = (this.currentEbaloIndex + 1) % this.ebaloImages.length;
+    //     this.ebaloImages[this.currentEbaloIndex].setVisible(true);
+    // }
 }
