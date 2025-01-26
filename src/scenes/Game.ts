@@ -17,8 +17,7 @@ export class Game extends Scene {
     private slidesContainer: Phaser.GameObjects.Container;
     private currentIndex: number = 0;
     private slideshowTimer: number = 0;
-    private slideChangeInterval: number = 2000;
-    private isFading: boolean = false;
+    private slideChangeInterval: number = 1000;
 
     // Declare additional properties
     private background: Phaser.GameObjects.Image;
@@ -117,7 +116,7 @@ export class Game extends Scene {
         const maxX = this.cameras.main.width;
         const minY = 0;
         const maxY = this.cameras.main.height;
-    
+
         if (this.cursors.left.isDown) {
             const newX = this.player.x - this.playerSpeed * delta / 1000;
             if (newX >= minX) {
@@ -140,25 +139,25 @@ export class Game extends Scene {
                 this.player.y = newY;
             }
         }
-    
+
         this.ak.x = this.player.x - 50;
         this.ak.y = this.player.y + 10;
-    
+
         this.bang.x = this.player.x - 200;
         this.bang.y = this.player.y - 40;
-    
+
         if (this.spacebar.isDown) {
             if (!this.shot.isPlaying) {
                 this.shot.play({ volume: 0.3 });
             } else {
                 this.shot.resume();
             }
-    
+
             this.flashTimer += delta;
             if (this.flashTimer >= this.flashInterval) {
                 const newAlpha = this.bang.alpha === 0 ? 1 : 0;
                 this.bang.setAlpha(newAlpha);
-    
+
                 // Only check for hits when bang appears
                 if (newAlpha === 1 && this.canHitPile) {
                     if (
@@ -167,7 +166,7 @@ export class Game extends Scene {
                     ) {
                         this.pile_hit--;
                         this.canHitPile = false; // Prevent multiple hits until bang disappears
-    
+
                         if (this.pile_hit <= 0) {
                             this.pile.setVisible(false);
                             this.msg_text.setVisible(true);
@@ -176,7 +175,7 @@ export class Game extends Scene {
                 } else if (newAlpha === 0) {
                     this.canHitPile = true; // Reset flag when bang disappears
                 }
-    
+
                 this.flashTimer = 0;
             }
         } else {
@@ -187,23 +186,22 @@ export class Game extends Scene {
             this.flashTimer = 0;
             this.canHitPile = true; // Reset flag when spacebar is released
         }
-    
+
         // Slideshow update
         this.slideshowTimer += delta;
-        if (this.slideshowTimer >= this.slideChangeInterval && !this.isFading) {
+        if (this.slideshowTimer >= this.slideChangeInterval) {
             this.changeSlide();
             this.slideshowTimer = 0;
         }
     }
+
     changeSlide() {
-        this.isFading = true;
 
         // Fade out current image
         this.tweens.add({
             targets: this.slides[this.currentIndex],
             alpha: 0,
-            duration: 500,
-            ease: 'Linear',
+            duration: 0,
             onComplete: () => {
                 // Set current image invisible after fading out
                 this.slides[this.currentIndex].setVisible(false);
@@ -212,16 +210,6 @@ export class Game extends Scene {
                 // Set next image visible and reset alpha
                 this.slides[this.currentIndex].setAlpha(1);
                 this.slides[this.currentIndex].setVisible(true);
-                // Fade in next image
-                this.tweens.add({
-                    targets: this.slides[this.currentIndex],
-                    alpha: 1,
-                    duration: 500,
-                    ease: 'Linear',
-                    onComplete: () => {
-                        this.isFading = false;
-                    }
-                });
             }
         });
     }
