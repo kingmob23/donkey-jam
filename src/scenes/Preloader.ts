@@ -43,9 +43,9 @@ export class Preloader extends Scene {
         this.load.image('enemy', 'gom.png');
 
         this.load.setPath('assets/pile');
-        this.load.image('pile', 'pile1.png');
+        this.load.image('pile', 'pile.png');
+        this.load.image('pile1', 'pile1.png');
         this.load.image('pile2', 'pile2.png');
-        this.load.image('pile3', 'pile3.png');
         this.load.image('trash', 'trash.png');
         this.load.image('fuel', 'fuel.png');
         this.load.image('wire', 'wire.png');

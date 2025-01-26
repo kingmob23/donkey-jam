@@ -100,7 +100,7 @@ export class Game extends Scene {
                     if ((bangPos.x - 100 <= pilePos.x && pilePos.x <= bangPos.x + 100) &&
                         (bangPos.y - 100 <= pilePos.y && pilePos.y <= bangPos.y + 100)
                     ) {
-                        if (pile.hit()) {  // Returns true if pile was destroyed
+                        if (pile.hit()) {
                             this.destroyedPiles++;
                             this.msg_text.setText(`PILE DESTROYED ${this.destroyedPiles}`);
                             this.msg_text.setVisible(true);
@@ -112,13 +112,11 @@ export class Game extends Scene {
             });
         }
 
-        // Handle message fade out
         if (this.msg_text.visible) {
             this.messageTimer += delta;
             if (this.messageTimer >= this.messageDisplayTime) {
                 this.msg_text.setVisible(false);
             } else if (this.messageTimer >= this.messageDisplayTime - 1000) {
-                // Start fading out during the last second
                 const alpha = 1 - (this.messageTimer - (this.messageDisplayTime - 1000)) / 1000;
                 this.msg_text.setAlpha(alpha);
             }

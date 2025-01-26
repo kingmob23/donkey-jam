@@ -3,12 +3,12 @@ import { Scene } from 'phaser';
 type PileDrop = 'trash' | 'fuel' | 'wire' | 'steam_pipe' | 'magnet' | 'membrane' | 'amplifier';
 
 export class Pile {
-    private sprite: Phaser.GameObjects.Image;
+    private readonly sprite: Phaser.GameObjects.Image;
     private dropSprite: Phaser.GameObjects.Image | null = null;
     private health: number = 3;
     private static readonly SPRITES = ['pile', 'pile1', 'pile2'];
     private static readonly DROPS: PileDrop[] = ['trash', 'fuel', 'wire', 'steam_pipe', 'magnet', 'membrane', 'amplifier'];
-    private drop: PileDrop;
+    private readonly drop: PileDrop;
 
     constructor(scene: Scene, bounds: { width: number, height: number }) {
         const randomSprite = Phaser.Math.RND.pick(Pile.SPRITES);

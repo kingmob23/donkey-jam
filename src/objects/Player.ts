@@ -27,8 +27,9 @@ export class Player extends Phaser.GameObjects.Image {
         this.bang.setAlpha(0);
         this.bang.setDepth(4);
 
-        this.ak = scene.add.image(this.x, this.y, 'ak');
-        this.ak.setRotation(10);
+        this.ak = scene.add.image(this.x - 300, this.y, 'ak');
+        this.ak.setScale(0.7);
+        this.ak.setRotation(15);
         this.ak.setDepth(4);
 
         this.shot = scene.sound.add('shot');
@@ -61,13 +62,6 @@ export class Player extends Phaser.GameObjects.Image {
                 this.y = newY;
             }
         }
-
-        this.bang.x = this.x - 200;
-        this.bang.y = this.y - 40;
-
-        this.ak.x = this.x - 200;
-        this.ak.y = this.y - 40;
-
     }
 
     public getBangPosition(): { x: number, y: number } {
