@@ -7,7 +7,7 @@ export class Game extends Scene
     private readonly flashInterval: number = 200;
     private flashTimer: number = 0;
     private pile_hit: number = 5;
-    private canHitPile: boolean = true;  // New flag to track if we can hit the pile
+    private canHitPile: boolean = true;
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     private spacebar: Phaser.Input.Keyboard.Key;
     private shot: Phaser.Sound.BaseSound;
