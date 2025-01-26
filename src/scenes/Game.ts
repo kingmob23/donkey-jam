@@ -2,10 +2,12 @@ import { Scene } from 'phaser';
 import { Player } from '../objects/Player';
 
 export class Game extends Scene {
-    // Existing properties
     private pile_hit: number = 5;
     private canHitPile: boolean = true;
     private soundtrack: Phaser.Sound.BaseSound;
+    private messageTimer: number = 0;
+    private readonly messageDisplayTime: number = 3000;
+    private destroyedPiles: number = 0;
 
     // Slideshow properties
     private slides: Phaser.GameObjects.Image[] = [];
@@ -14,11 +16,10 @@ export class Game extends Scene {
     private slideshowTimer: number = 0;
     private slideChangeInterval: number = 1000;
 
-    // Declare additional properties
     private background: Phaser.GameObjects.Image;
     private player: Player;
     private enemy: Phaser.GameObjects.Image;
-    private pile: Phaser.GameObjects.Image;
+    private piles: Phaser.GameObjects.Image[] = [];
     private msg_text: Phaser.GameObjects.Text;
 
     constructor() {
@@ -37,9 +38,15 @@ export class Game extends Scene {
         this.soundtrack = this.sound.add('sountrack');
         this.soundtrack.play({ loop: true, volume: 0.1 });
 
-        this.pile = this.add.image(Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), 'pile');
-        this.pile.setScale(0.25);
-        this.pile.setDepth(1);
+        this.piles = [
+            this.add.image(Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), 'pile'),
+            this.add.image(Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), 'pile2'),
+            this.add.image(Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), 'pile3')
+        ];
+        this.piles.forEach(pile => {
+            pile.setScale(0.25);
+            pile.setDepth(1);
+        });
 
         this.player = new Player(
             this,
@@ -75,26 +82,41 @@ export class Game extends Scene {
             maxY: this.cameras.main.height
         };
 
-        // Update player and check if bang appeared
         const bangAppeared = this.player.update(delta, bounds);
 
         // Handle pile hits when bang appears
         if (bangAppeared && this.canHitPile) {
             const bangPos = this.player.getBangPosition();
-            if (
-                (bangPos.x - 100 <= this.pile.x && this.pile.x <= bangPos.x + 100) &&
-                (bangPos.y - 100 <= this.pile.y && this.pile.y <= bangPos.y + 100)
-            ) {
-                this.pile_hit--;
-                this.canHitPile = false;
 
-                if (this.pile_hit <= 0) {
-                    this.pile.setVisible(false);
+            // Check each pile for hits
+            this.piles.forEach((pile, _) => {
+                if (pile.visible &&
+                    (bangPos.x - 100 <= pile.x && pile.x <= bangPos.x + 100) &&
+                    (bangPos.y - 100 <= pile.y && pile.y <= bangPos.y + 100)
+                ) {
+                    pile.setVisible(false);
+                    this.destroyedPiles++;
+                    this.msg_text.setText(`PILE DESTROYED ${this.destroyedPiles}`);
                     this.msg_text.setVisible(true);
+                    this.msg_text.setAlpha(1);
+                    this.messageTimer = 0;
                 }
-            }
+            });
+            this.canHitPile = false;
         } else if (!bangAppeared) {
             this.canHitPile = true;
+        }
+
+        // Handle message fade out
+        if (this.msg_text.visible) {
+            this.messageTimer += delta;
+            if (this.messageTimer >= this.messageDisplayTime) {
+                this.msg_text.setVisible(false);
+            } else if (this.messageTimer >= this.messageDisplayTime - 1000) {
+                // Start fading out during the last second
+                const alpha = 1 - (this.messageTimer - (this.messageDisplayTime - 1000)) / 1000;
+                this.msg_text.setAlpha(alpha);
+            }
         }
 
         // Update slideshow
