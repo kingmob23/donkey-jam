@@ -5,7 +5,7 @@ export class GameOver extends Scene
     private deadFace: Phaser.GameObjects.Image;
     private gameOverText: Phaser.GameObjects.Text;
     private flashTimer: number = 0;
-    private readonly flashInterval: number = 500; // Flash every 0.5 seconds
+    private readonly flashInterval: number = 200;
 
     constructor ()
     {
@@ -21,8 +21,8 @@ export class GameOver extends Scene
         // Create game over text (initially invisible)
         this.gameOverText = this.add.text(
             this.cameras.main.width / 2,
-            this.cameras.main.height / 2,
-            'GAME OVER',
+            this.cameras.main.height - 100,
+            'ITS SO OVER',
             {
                 fontSize: '128px',
                 color: '#ff0000',
