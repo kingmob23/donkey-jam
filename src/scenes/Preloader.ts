@@ -30,31 +30,36 @@ export class Preloader extends Scene {
     }
 
     preload() {
-        // Установка пути для загрузки ресурсов
         this.load.setPath('assets');
 
-        // Предзагрузка изображений
         this.load.image('game-background', 'background.png');
+        this.load.audio('sountrack', 'lenya_bangs.mp3');
+
         this.load.image('player', 'monke.png');
         this.load.image('ak', 'ak.png');
         this.load.image('bang', 'bang.png');
+        this.load.audio('shot', 'gunshot.mp3');
 
         this.load.image('enemy', 'gom.png');
 
-        this.load.image('pile', 'pile.png');
+        this.load.setPath('assets/pile');
+        this.load.image('pile', 'pile1.png');
         this.load.image('pile2', 'pile2.png');
         this.load.image('pile3', 'pile3.png');
+        this.load.image('trash', 'trash.png');
+        this.load.image('fuel', 'fuel.png');
+        this.load.image('wire', 'wire.png');
+        this.load.image('steam_pipe', 'steam_pipe.png');
+        this.load.image('magnet', 'magnet.png');
+        this.load.image('membrane', 'membrane.png');
+        this.load.image('amplifier', 'amp.png');
 
-        this.load.image('healthy', 'UI/monkey/healthy.png');
-        this.load.image('red', 'UI/monkey/red.png');
-        this.load.image('owtch1', 'UI/monkey/owtch1.png');
-        this.load.image('owtch2', 'UI/monkey/owtch2.png');
-        this.load.image('owtch3', 'UI/monkey/owtch3.png');
-        this.load.image('dead', 'UI/monkey/dead.png');
-
-        // Предзагрузка аудио
-        this.load.audio('sountrack', 'lenya_bangs.mp3');
-        this.load.audio('shot', 'gunshot.mp3');
+        this.load.setPath('assets/UI/monkey');
+        this.load.image('healthy', 'healthy.png');
+        this.load.image('owtch1', 'owtch1.png');
+        this.load.image('owtch2', 'owtch2.png');
+        this.load.image('owtch3', 'owtch3.png');
+        this.load.image('dead', 'dead.png');
     }
 
     create() {

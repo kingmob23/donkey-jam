@@ -28,7 +28,7 @@ export class Player extends Phaser.GameObjects.Image {
         this.bang.setDepth(4);
 
         this.ak = scene.add.image(this.x, this.y, 'ak');
-        this.ak.setScale(0.3);
+        this.ak.setRotation(10);
         this.ak.setDepth(4);
 
         this.shot = scene.sound.add('shot');
