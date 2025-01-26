@@ -1,55 +1,58 @@
 import { Scene } from 'phaser';
 
-export class Preloader extends Scene
-{
-    constructor ()
-    {
+export class Preloader extends Scene {
+    constructor() {
         super('Preloader');
     }
 
-    init ()
-    {
-        //  We loaded this image in our Boot Scene, so we can display it here
+    init() {
+        // Отображение фонового изображения, если оно уже загружено в Boot сцене
         this.add.image(512, 384, 'background');
 
-        //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+        // Создание контейнера для прогресс-бара
+        const progressBox = this.add.rectangle(512, 384, 468, 32, 0xffffff, 0.2);
+        progressBox.setStrokeStyle(1, 0xffffff);
 
-        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512-230, 384, 4, 28, 0xffffff);
+        // Создание самого прогресс-бара
+        const progressBar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
+        progressBar.setOrigin(0, 0.5);
 
-        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+        // Обновление прогресс-бара при загрузке ресурсов
         this.load.on('progress', (progress: number) => {
+            progressBar.width = 4 + (460 * progress);
+        });
 
-            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
-
+        // Обработка события загрузки
+        this.load.on('complete', () => {
+            // Переход к следующей сцене после завершения загрузки
+            this.scene.start('MainMenu'); // Измените на 'Game', если хотите запускать сцену Game
         });
     }
 
-    preload ()
-    {
+    preload() {
+        // Установка пути для загрузки ресурсов
         this.load.setPath('assets');
 
+        // Предзагрузка изображений
         this.load.image('game-background', 'background.png');
-        this.load.audio('sountrack', 'lenya_bangs.mp3');
-
         this.load.image('player', 'monke.png');
         this.load.image('ak', 'ak.png');
         this.load.image('bang', 'bang.png');
-        this.load.audio('shot', 'gunshot.mp3');
-
         this.load.image('second-dude', 'gom.png');
-
         this.load.image('pile', 'pile.png');
+        this.load.image('ebalo', 'UI_mc_healty.png');
+        this.load.image('ebalored', 'UI_mc_healtyred.png');
+        this.load.image('ebalodmg1', 'UI_mc_owtch1.png');
+        this.load.image('ebalodmg2', 'UI_mc_owtch2.png');
+        this.load.image('ebalodmg3', 'UI_mc_owtch3.png');
+        this.load.image('ebalodead', 'UI_mc_dead.png');
+
+        // Предзагрузка аудио
+        this.load.audio('sountrack', 'lenya_bangs.mp3');
+        this.load.audio('shot', 'gunshot.mp3');
     }
 
-    create ()
-    {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
-
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('MainMenu');
+    create() {
+        // Этот метод не используется, так как переход к следующей сцене происходит в обработчике события 'complete'
     }
 }
