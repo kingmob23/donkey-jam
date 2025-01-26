@@ -111,7 +111,7 @@ export class Game extends Scene {
         this.slideshowTimer = 0;
     }
 
-    update(delta: number) {
+    update(time: number, delta: number) {
         // Existing update code
         const minX = 0;
         const maxX = this.cameras.main.width;
