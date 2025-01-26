@@ -4,7 +4,6 @@ import { Pile } from '../objects/Pile';
 import { Player } from '../objects/Player';
 
 export class Game extends Scene {
-    private canHitPile: boolean = true;
     private destroyedPiles: number = 0;
     private piles: Pile[] = [];
 
@@ -15,7 +14,7 @@ export class Game extends Scene {
 
     private background: Phaser.GameObjects.Image;
     private player: Player;
-    private enemy: Phaser.GameObjects.Image;
+    private enemy: Enemy;
 
     private msg_text: Phaser.GameObjects.Text;
 
@@ -42,29 +41,9 @@ export class Game extends Scene {
         }
 
         this.player = new Player(this, this.cameras.main.width + 100, this.cameras.main.height - 150);
-
         this.enemy = new Enemy(this, this.cameras.main.width - 100, this.cameras.main.height - 100, this.player);
 
-        // Слушаем событие атаки врага
-        this.player.on('enemyAttack', () => {
-            this.player.handleEnemyAttack();
-        });
-
-        // Слушаем событие атаки игрока
-        this.player.on('playerAttack', () => {
-            const bangPos = this.player.getBangPosition();
-            const distance = Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, bangPos.x, bangPos.y);
-            if (distance <= 100) {
-                console.log('enemy.handlePlayerAttack');
-            }
-        });
-
-        // Слушаем событие смерти игрока
         this.player.on('playerDead', () => {
-            this.scene.start('GameOver');
-        });
-
-        this.input.once('pointerdown', () => {
             this.scene.start('GameOver');
         });
 
@@ -86,14 +65,15 @@ export class Game extends Scene {
             maxY: this.cameras.main.height
         };
 
-        // Update player and enemy
+        // Update player and check if bang appeared
+        const bangAppeared = this.player.update(delta, bounds);
         this.enemy.update(time, delta);
-        this.player.update(delta, bounds);
 
-        // Handle pile hits
-        if (this.canHitPile) {
+        // Handle hits only when bang appears
+        if (bangAppeared) {
             const bangPos = this.player.getBangPosition();
 
+            // Check piles
             this.piles.forEach(pile => {
                 if (pile.isVisible()) {
                     const pilePos = pile.getPosition();
@@ -110,8 +90,24 @@ export class Game extends Scene {
                     }
                 }
             });
+
+            // Check enemy
+            if (this.enemy.visible) {
+                const enemyPos = this.enemy.getPosition();
+                if ((bangPos.x - 100 <= enemyPos.x && enemyPos.x <= bangPos.x + 100) &&
+                    (bangPos.y - 100 <= enemyPos.y && enemyPos.y <= bangPos.y + 100)
+                ) {
+                    if (this.enemy.hit()) {
+                        this.msg_text.setText('ENEMY DESTROYED');
+                        this.msg_text.setVisible(true);
+                        this.msg_text.setAlpha(1);
+                        this.messageTimer = 0;
+                    }
+                }
+            }
         }
 
+        // Handle message fade out
         if (this.msg_text.visible) {
             this.messageTimer += delta;
             if (this.messageTimer >= this.messageDisplayTime) {

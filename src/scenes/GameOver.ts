@@ -2,9 +2,10 @@ import { Scene } from 'phaser';
 
 export class GameOver extends Scene
 {
-    camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    gameover_text : Phaser.GameObjects.Text;
+    private deadFace: Phaser.GameObjects.Image;
+    private gameOverText: Phaser.GameObjects.Text;
+    private flashTimer: number = 0;
+    private readonly flashInterval: number = 500; // Flash every 0.5 seconds
 
     constructor ()
     {
@@ -13,23 +14,56 @@ export class GameOver extends Scene
 
     create ()
     {
-        this.camera = this.cameras.main
-        this.camera.setBackgroundColor(0xff0000);
+        // Create dead face at original position (same as in game)
+        this.deadFace = this.add.image(80, 80, 'dead');
+        this.deadFace.setScale(0.5);
 
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
+        // Create game over text (initially invisible)
+        this.gameOverText = this.add.text(
+            this.cameras.main.width / 2,
+            this.cameras.main.height / 2,
+            'GAME OVER',
+            {
+                fontSize: '128px',
+                color: '#ff0000',
+                stroke: '#000000',
+                strokeThickness: 6
+            }
+        );
+        this.gameOverText.setOrigin(0.5);
+        this.gameOverText.setAlpha(0);
 
-        this.gameover_text = this.add.text(512, 384, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
+        // Animate dead face to center and scale up
+        this.tweens.add({
+            targets: this.deadFace,
+            x: this.cameras.main.width / 2,
+            y: this.cameras.main.height / 2,
+            scale: Math.min(
+                (this.cameras.main.width * 0.7) / this.deadFace.width,
+                (this.cameras.main.height * 0.7) / this.deadFace.height
+            ),
+            duration: 2000,
+            ease: 'Power2',
+            onComplete: () => {
+                // Start flashing text after face animation
+                this.gameOverText.setAlpha(1);
+            }
         });
-        this.gameover_text.setOrigin(0.5);
 
+        // Click to restart
         this.input.once('pointerdown', () => {
-
-            this.scene.start('MainMenu');
-
+            this.scene.start('Game');
         });
+    }
+
+    update(time: number, delta: number) {
+        // Flash game over text
+        if (this.gameOverText.alpha > 0) {
+            this.flashTimer += delta;
+            if (this.flashTimer >= this.flashInterval) {
+                this.gameOverText.setAlpha(this.gameOverText.alpha === 1 ? 0.3 : 1);
+                this.flashTimer = 0;
+            }
+        }
     }
 }
