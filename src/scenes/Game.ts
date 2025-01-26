@@ -4,6 +4,7 @@ import { Player } from '../objects/Player';
 export class Game extends Scene {
     private pile_hit: number = 5;
     private canHitPile: boolean = true;
+
     private soundtrack: Phaser.Sound.BaseSound;
     private messageTimer: number = 0;
     private readonly messageDisplayTime: number = 3000;
