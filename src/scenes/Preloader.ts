@@ -30,31 +30,46 @@ export class Preloader extends Scene {
     }
 
     preload() {
-        // Установка пути для загрузки ресурсов
         this.load.setPath('assets');
 
-        // Предзагрузка изображений
+        // Game background and soundtrack
         this.load.image('game-background', 'background.png');
+        this.load.audio('sountrack', 'lenya_bangs.mp3');
+
+        // Player assets
         this.load.image('player', 'monke.png');
         this.load.image('ak', 'ak.png');
         this.load.image('bang', 'bang.png');
+        this.load.audio('shot', 'gunshot.mp3');
 
+        // Enemy assets
         this.load.image('enemy', 'gom.png');
 
+        // Pile assets
+        this.load.setPath('assets/pile');
         this.load.image('pile', 'pile.png');
+        this.load.image('pile1', 'pile1.png');
         this.load.image('pile2', 'pile2.png');
-        this.load.image('pile3', 'pile3.png');
 
+        // Drop assets
+        this.load.image('trash', 'trash.png');
+        this.load.image('fuel', 'fuel.png');
+        this.load.image('wire', 'wire.png');
+        this.load.image('steam_pipe', 'steam_pipe.png');
+        this.load.image('magnet', 'magnet.png');
+        this.load.image('membrane', 'membrane.png');
+        this.load.image('amplifier', 'amp.png');
+
+        // Reset path for UI assets
+        this.load.setPath('assets');
+
+        // UI assets
         this.load.image('ebalo', 'UI_mc_healty.png');
         this.load.image('ebalored', 'UI_mc_healtyred.png');
         this.load.image('ebalodmg1', 'UI_mc_owtch1.png');
         this.load.image('ebalodmg2', 'UI_mc_owtch2.png');
         this.load.image('ebalodmg3', 'UI_mc_owtch3.png');
         this.load.image('ebalodead', 'UI_mc_dead.png');
-
-        // Предзагрузка аудио
-        this.load.audio('sountrack', 'lenya_bangs.mp3');
-        this.load.audio('shot', 'gunshot.mp3');
     }
 
     create() {
