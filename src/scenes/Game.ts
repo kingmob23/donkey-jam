@@ -13,6 +13,9 @@ export class Game extends Scene {
     private readonly messageDisplayTime: number = 3000;
 
     private background: Phaser.GameObjects.Image;
+    private foreground: Phaser.GameObjects.Image;
+    private midground: Phaser.GameObjects.Image;
+
     private player: Player;
     private enemy: Enemy;
 
@@ -25,15 +28,19 @@ export class Game extends Scene {
     create() {
         this.sound.setVolume(0.4);
 
-        this.background = this.add.image(0, 0, 'game-background');
-        this.background.setOrigin(0, 0);
-        this.background.setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+        this.background = this.add.image(1920 / 2, 1080 - 839 / 2, 'background');
         this.background.setDepth(-1);
+
+        this.midground = this.add.image(1920 / 2, 1080 - 766 / 2, 'midground');
+        this.midground.setDepth(-1);
+
+        this.foreground = this.add.image(1920 / 2, 1080 - 159 / 2, 'foreground');
+        this.foreground.setDepth(10);
 
         this.soundtrack = this.sound.add('sountrack');
         this.soundtrack.play({ loop: true, volume: 0.1 });
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 1000; i++) {
             this.piles.push(new Pile(this, {
                 width: this.cameras.main.width,
                 height: this.cameras.main.height

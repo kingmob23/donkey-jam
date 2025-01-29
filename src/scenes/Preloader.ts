@@ -7,7 +7,7 @@ export class Preloader extends Scene {
 
     init() {
         // Отображение фонового изображения, если оно уже загружено в Boot сцене
-        this.add.image(512, 384, 'background');
+        this.add.image(512, 384, 'bg');
 
         // Создание контейнера для прогресс-бара
         const progressBox = this.add.rectangle(512, 384, 468, 32, 0xffffff, 0.2);
@@ -32,7 +32,10 @@ export class Preloader extends Scene {
     preload() {
         this.load.setPath('assets');
 
-        this.load.image('game-background', 'background.png');
+        this.load.image('background', 'background.png');
+        this.load.image('foreground', 'foreground.png');
+        this.load.image('midground', 'midground.png');
+
         this.load.audio('sountrack', 'lenya_bangs.mp3');
 
         this.load.image('player', 'monke.png');
@@ -40,12 +43,11 @@ export class Preloader extends Scene {
         this.load.image('bang', 'bang.png');
         this.load.audio('shot', 'gunshot.mp3');
 
-        this.load.image('enemy', 'gom.png');
+        this.load.setPath('assets/raiders');
+        this.load.image('raider', 'raider.png');
 
         this.load.setPath('assets/pile');
         this.load.image('pile', 'pile.png');
-        this.load.image('pile1', 'pile1.png');
-        this.load.image('pile2', 'pile2.png');
         this.load.image('trash', 'trash.png');
         this.load.image('fuel', 'fuel.png');
         this.load.image('wire', 'wire.png');
@@ -60,6 +62,14 @@ export class Preloader extends Scene {
         this.load.image('owtch2', 'owtch2.png');
         this.load.image('owtch3', 'owtch3.png');
         this.load.image('dead', 'dead.png');
+
+        this.load.setPath('assets/raiders');
+        this.load.image('raider', 'raider.png');
+        this.load.image('raider1', 'raider1.png');
+        this.load.image('raider_attack', 'raider_attack.png');
+        this.load.image('raider_attack1', 'raider_attack1.png');
+        this.load.image('raiderhurt', 'raiderhurt.png');
+        this.load.image('raiderhurt1', 'raiderhurt1.png');
     }
 
     create() {

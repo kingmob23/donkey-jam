@@ -13,7 +13,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     private health: number = 3;
 
     constructor(scene: Scene, x: number, y: number, player: Player) {
-        super(scene, x, y, 'enemy');
+        super(scene, x, y, 'raider');
         this.player = player;
 
         this.setDepth(2);

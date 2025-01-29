@@ -18,8 +18,8 @@ export class Player extends Phaser.GameObjects.Image {
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'player');
-        this.setScale(0.3);
-        this.setDepth(0);
+        this.setScale(0.1);
+        this.setDepth(2);
         scene.add.existing(this);
 
         this.bang = scene.add.image(this.x, this.y, 'bang');
@@ -29,7 +29,7 @@ export class Player extends Phaser.GameObjects.Image {
 
         this.ak = scene.add.image(this.x - 300, this.y, 'ak');
         this.ak.setScale(0.7);
-        this.ak.setDepth(1);
+        this.ak.setDepth(2);
 
         this.shot = scene.sound.add('shot');
 
