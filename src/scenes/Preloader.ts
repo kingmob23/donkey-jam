@@ -33,6 +33,8 @@ export class Preloader extends Scene {
         this.load.setPath('assets');
 
         this.load.image('game-background', 'background.png');
+        this.load.image('game-foreground', 'foreground.png');
+        this.load.image('game-midground', 'midground.png');
         this.load.audio('sountrack', 'lenya_bangs.mp3');
 
         this.load.image('player', 'monke.png');
@@ -60,6 +62,14 @@ export class Preloader extends Scene {
         this.load.image('owtch2', 'owtch2.png');
         this.load.image('owtch3', 'owtch3.png');
         this.load.image('dead', 'dead.png');
+
+        this.load.setPath('assets/raiders');
+        this.load.image('raider', 'raider.png');
+        this.load.image('raider1', 'raider1.png');
+        this.load.image('raider_attack', 'raider_attack.png');
+        this.load.image('raider_attack1', 'raider_attack1.png');
+        this.load.image('raiderhurt', 'raiderhurt.png');
+        this.load.image('raiderhurt1', 'raiderhurt1.png');
     }
 
     create() {
