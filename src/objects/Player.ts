@@ -16,6 +16,8 @@ export class Player extends Phaser.GameObjects.Image {
     private hitCount: number = 0;
     private maxHitsBeforeDeath: number = 5;
 
+    private inventory: string[]; // Массив для хранения предметов
+
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'player');
         this.setScale(0.3);
@@ -34,6 +36,8 @@ export class Player extends Phaser.GameObjects.Image {
         this.shot = scene.sound.add('shot');
 
         this.monkeyState = new MonkeyState(scene, 80, 80);
+
+        this.inventory = []; // Инициализация инвентаря
     }
 
     update(delta: number, bounds: { minX: number, maxX: number, minY: number, maxY: number }): boolean {
@@ -91,6 +95,12 @@ export class Player extends Phaser.GameObjects.Image {
             this.flashTimer = 0;
         }
 
+        // Подбор предметов по нажатию на E
+        const eKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        if (eKey.isDown) {
+            this.pickUpItems();
+        }
+
         return false;
     }
 
@@ -107,5 +117,46 @@ export class Player extends Phaser.GameObjects.Image {
             this.shot.stop();  // Stop any playing sounds
             this.emit('playerDead');
         }
+    }
+
+    // Метод для добавления предмета в инвентарь
+    public addItemToInventory(itemKey: string): void {
+        this.inventory.push(itemKey);
+        console.log(`Item added to inventory: ${itemKey}`);
+        this.printInventory(); // Выводим инвентарь в консоль
+    }
+
+    // Метод для отображения инвентаря в консоли
+    public printInventory(): void {
+        console.log("Player's Inventory:", this.inventory.join(', '));
+    }
+
+    // Метод для получения инвентаря
+    public getInventory(): string[] {
+        return this.inventory;
+    }
+
+    // Метод для подбора предметов
+    private pickUpItems() {
+        const playerBounds = this.getBounds(); // Получаем границы игрока
+
+        // Получаем все предметы на сцене
+        const items = this.scene.children.getChildren().filter(child => {
+            return child instanceof Phaser.GameObjects.Image && 
+                   ['trash', 'fuel', 'wire', 'steam_pipe', 'magnet', 'membrane', 'amplifier'].includes(child.texture.key);
+        }) as Phaser.GameObjects.Image[];
+
+        items.forEach(item => {
+            if (item.active) { // Проверяем, активен ли предмет
+                const itemBounds = item.getBounds(); // Получаем границы предмета
+
+                // Проверяем коллизию между игроком и предметом
+                if (Phaser.Geom.Intersects.RectangleToRectangle(playerBounds, itemBounds)) {
+                    this.addItemToInventory(item.texture.key); // Добавляем предмет в инвентарь
+                    item.destroy(); // Удаляем предмет с экрана
+                    console.log(`Picked up: ${item.texture.key}`);
+                }
+            }
+        });
     }
 }

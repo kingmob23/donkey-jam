@@ -1,3 +1,4 @@
+// src/scenes/Game.ts
 import { Scene } from 'phaser';
 import { Enemy } from '../objects/Enemy';
 import { Pile } from '../objects/Pile';
@@ -6,6 +7,7 @@ import { Player } from '../objects/Player';
 export class Game extends Scene {
     private destroyedPiles: number = 0;
     private piles: Pile[] = [];
+    private items: Phaser.GameObjects.Image[] = []; // Массив для хранения предметов
 
     private soundtrack: Phaser.Sound.BaseSound;
 
@@ -55,6 +57,50 @@ export class Game extends Scene {
         this.msg_text.setDepth(5);
         this.msg_text.setVisible(false);
 
+        // Создаем предметы на сцене
+        const items = [
+            { key: 'trash', x: 200, y: 300 },
+            { key: 'fuel', x: 400, y: 300 },
+            { key: 'wire', x: 600, y: 300 },
+            { key: 'steam_pipe', x: 800, y: 300 },
+            { key: 'magnet', x: 1000, y: 300 },
+            { key: 'membrane', x: 1200, y: 300 },
+            { key: 'amplifier', x: 1400, y: 300 }
+        ];
+
+        this.items = items.map(item => {
+            const itemImage = this.add.image(item.x, item.y, item.key).setScale(0.5);
+            itemImage.setInteractive(); // Делаем предмет интерактивным
+            return itemImage;
+        });
+
+        // Подбор предметов по нажатию на E
+        this.input.keyboard!.on('keydown-E', () => {
+            this.pickUpItems();
+        });
+    }
+
+    private pickUpItems() {
+        const playerBounds = this.player.getBounds(); // Получаем границы игрока
+
+        this.items.forEach((item, index) => {
+            if (item.active) { // Проверяем, активен ли предмет
+                const itemBounds = item.getBounds(); // Получаем границы предмета
+
+                // Проверяем коллизию между игроком и предметом
+                if (Phaser.Geom.Intersects.RectangleToRectangle(playerBounds, itemBounds)) {
+                    this.player.addItemToInventory(item.texture.key); // Добавляем предмет в инвентарь
+                    item.destroy(); // Удаляем предмет с экрана
+                    this.items.splice(index, 1); // Удаляем предмет из массива
+                    console.log(`Picked up: ${item.texture.key}`);
+                }
+            }
+        });
+    }
+
+    private getRandomItemKey(): string {
+        const items = ['trash', 'fuel', 'wire', 'steam_pipe', 'magnet', 'membrane', 'amplifier'];
+        return items[Math.floor(Math.random() * items.length)];
     }
 
     update(time: number, delta: number) {
@@ -118,5 +164,4 @@ export class Game extends Scene {
             }
         }
     }
-
 }
