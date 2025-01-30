@@ -49,9 +49,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT).isDown) {
             body.setVelocityX(-this.speed);
+            this.flipX=false
         }
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT).isDown) {
             body.setVelocityX(this.speed);
+            this.flipX=true
         }
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP).isDown) {
             body.setVelocityY(-this.speed);
