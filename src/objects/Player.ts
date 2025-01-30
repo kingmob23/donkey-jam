@@ -3,22 +3,26 @@ import { Scene } from 'phaser';
 import { Depths } from '../main';
 import { MonkeyState } from './MonkeyState';
 
-export class Player extends Phaser.GameObjects.Image {
+export class Player extends Phaser.Physics.Arcade.Sprite {
     private speed: number = 300;
-    private shot: Phaser.Sound.BaseSound;
-    private bang: Phaser.GameObjects.Image;
-    private ak: Phaser.GameObjects.Image;
-
     private flashInterval: number = 200;
     private flashTimer: number = 0;
 
-    private monkeyState: MonkeyState;
+    private readonly shot: Phaser.Sound.BaseSound;
+    private readonly bang: Phaser.GameObjects.Image;
+    private readonly ak: Phaser.GameObjects.Image;
+
+    private readonly monkeyState: MonkeyState;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'player');
-        this.setScale(0.1);
+        scene.physics.add.existing(this);
+        this.setScale(0.4);
         this.setDepth(Depths.Player);
         scene.add.existing(this);
+
+        // Set collision body size
+        this.body?.setSize(this.width, this.height);
 
         this.ak = scene.add.image(this.x - 300, this.y, 'ak');
         this.ak.setScale(0.7);
@@ -35,32 +39,23 @@ export class Player extends Phaser.GameObjects.Image {
     }
 
     update(delta: number, bounds: { minX: number, maxX: number, minY: number, maxY: number }): boolean {
+        const body = this.body as Phaser.Physics.Arcade.Body;
+        body.setVelocity(0);
+
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT).isDown) {
-            const newX = this.x - this.speed * delta / 1000;
-            if (newX >= bounds.minX) {
-                this.x = newX;
-            }
-            this.setFlipX(false);
+            body.setVelocityX(-this.speed);
         }
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT).isDown) {
-            const newX = this.x + this.speed * delta / 1000;
-            if (newX <= bounds.maxX) {
-                this.x = newX;
-            }
-            this.setFlipX(true);
+            body.setVelocityX(this.speed);
         }
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP).isDown) {
-            const newY = this.y - this.speed * delta / 1000;
-            if (newY >= bounds.minY) {
-                this.y = newY;
-            }
+            body.setVelocityY(-this.speed);
         }
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN).isDown) {
-            const newY = this.y + this.speed * delta / 1000;
-            if (newY <= bounds.maxY) {
-                this.y = newY;
-            }
+            body.setVelocityY(this.speed);
         }
+
+        body.setCollideWorldBounds(true);
 
         this.ak.x = this.x - 50;
         this.ak.y = this.y + 10;

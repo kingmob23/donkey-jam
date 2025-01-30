@@ -13,11 +13,10 @@ export class Pile {
     constructor(scene: Scene, bounds: { width: number, height: number }) {
         const randomSprite = Phaser.Math.RND.pick(Pile.SPRITES);
         const x = Phaser.Math.Between(0, bounds.width);
-        const y = Phaser.Math.Between(350, bounds.height + 310 - 159);
+        const y = Phaser.Math.Between(350, bounds.height - 160);
 
         this.sprite = scene.add.image(x, y, randomSprite);
         this.sprite.setScale(0.4);
-        this.sprite.setDepth(Depths.Piles);
 
         this.drop = Phaser.Math.RND.pick(Pile.DROPS);
     }
@@ -50,5 +49,13 @@ export class Pile {
 
     getDrop(): PileDrop {
         return this.drop;
+    }
+
+    update(playerY: number): void {
+        const depth = playerY >= this.sprite.y - 130 ? Depths.Piles : Depths.Player + 1;
+        this.sprite.setDepth(depth);
+        if (this.dropSprite) {
+            this.dropSprite.setDepth(depth);
+        }
     }
 }

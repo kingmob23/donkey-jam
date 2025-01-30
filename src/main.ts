@@ -16,6 +16,12 @@ const config: Types.Core.GameConfig = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: false
+        }
+    },
     scene: [
         Boot,
         Preloader,
@@ -30,8 +36,8 @@ export enum Depths {
     Midground = -1,
     Default = 0,
     Piles = 1,
-    Enemy = 2,
-    Player = 3,
+    Player = 2,
+    Enemy = 3,
     Foreground = 8,
     UI = 9,
     Text = 10

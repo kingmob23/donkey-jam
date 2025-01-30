@@ -5,7 +5,7 @@ export class GameOver extends Scene
     private deadFace: Phaser.GameObjects.Image;
     private gameOverText: Phaser.GameObjects.Text;
     private flashTimer: number = 0;
-    private readonly flashInterval: number = 200;
+    private readonly flashInterval: number = 100;
 
     constructor ()
     {
@@ -26,8 +26,6 @@ export class GameOver extends Scene
             {
                 fontSize: '128px',
                 color: '#ff0000',
-                stroke: '#000000',
-                strokeThickness: 6
             }
         );
         this.gameOverText.setOrigin(0.5);

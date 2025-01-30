@@ -5,6 +5,8 @@ import { Pile } from '../objects/Pile';
 import { Player } from '../objects/Player';
 
 export class Game extends Scene {
+    enemies: Enemy[] = [];
+
     private destroyedPiles: number = 0;
     private readonly piles: Pile[] = [];
 
@@ -18,7 +20,6 @@ export class Game extends Scene {
     private midground: Phaser.GameObjects.Image;
 
     private player: Player;
-    private enemy: Enemy;
 
     private msg_text: Phaser.GameObjects.Text;
 
@@ -50,7 +51,7 @@ export class Game extends Scene {
 
         this.player = new Player(this, this.cameras.main.width / 2, this.cameras.main.height / 2);
 
-        this.enemy = new Enemy(this, Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), this.player);
+        this.enemies.push(new Enemy(this, Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), this.player));
 
         this.player.on('playerDead', () => {
             this.scene.start('GameOver');
@@ -67,14 +68,21 @@ export class Game extends Scene {
         this.time.addEvent({
             delay: 30000,
             callback: () => {
-                this.enemy = new Enemy(this, Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), this.player);
+                const enemy = new Enemy(this, Phaser.Math.Between(0, this.cameras.main.width),
+                    Phaser.Math.Between(0, this.cameras.main.height), this.player);
+                this.enemies.push(enemy);
+                this.physics.add.collider(this.player, enemy);
             },
             loop: true
+        });
+
+        this.enemies.forEach(enemy => {
+            this.physics.add.collider(this.player, enemy);
         });
     }
 
     update(time: number, delta: number) {
-
+        this.piles.forEach(pile => pile.update(this.player.y));
 
         const bounds = {
             minX: 50,
@@ -85,7 +93,7 @@ export class Game extends Scene {
 
         // Update player and check if bang appeared
         const bangAppeared = this.player.update(delta, bounds);
-        this.enemy.update(time, delta);
+        this.enemies.forEach(enemy => enemy.update(time, delta));
 
         // Handle hits only when bang appears
         if (bangAppeared) {
@@ -109,20 +117,21 @@ export class Game extends Scene {
                 }
             });
 
-            // Check enemy
-            if (this.enemy.visible) {
-                const enemyPos = this.enemy.getPosition();
-                if ((bangPos.x - 100 <= enemyPos.x && enemyPos.x <= bangPos.x + 100) &&
-                    (bangPos.y - 100 <= enemyPos.y && enemyPos.y <= bangPos.y + 100)
-                ) {
-                    if (this.enemy.hit()) {
-                        this.msg_text.setText('ENEMY DESTROYED');
-                        this.msg_text.setVisible(true);
-                        this.msg_text.setAlpha(1);
-                        this.messageTimer = 0;
+            this.enemies.forEach(enemy => {
+                if (enemy.visible) {
+                    const enemyPos = enemy.getPosition();
+                    if ((bangPos.x - 100 <= enemyPos.x && enemyPos.x <= bangPos.x + 100) &&
+                        (bangPos.y - 100 <= enemyPos.y && enemyPos.y <= bangPos.y + 100)
+                    ) {
+                        if (enemy.hit()) {
+                            this.msg_text.setText('ENEMY DESTROYED');
+                            this.msg_text.setVisible(true);
+                            this.msg_text.setAlpha(1);
+                            this.messageTimer = 0;
+                        }
                     }
                 }
-            }
+            });
         }
 
         // Handle message fade out
