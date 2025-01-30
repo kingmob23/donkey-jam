@@ -35,7 +35,11 @@ export class Pile {
         if (!this.dropSprite) {
             const { x, y } = this.getPosition();
             this.dropSprite = this.sprite.scene.add.image(x, y, this.drop);
-            this.dropSprite.setDepth(Depths.Piles);
+            this.dropSprite.setDepth(Depths.Player - 1);
+            this.dropSprite.setScale(0.4);
+            this.dropSprite.setName(this.drop);
+            this.dropSprite.setVisible(true);
+            this.dropSprite.setActive(true);
         }
     }
 
@@ -49,6 +53,10 @@ export class Pile {
 
     getDrop(): PileDrop {
         return this.drop;
+    }
+
+    getDroppedItem(): Phaser.GameObjects.Image | null {
+        return this.dropSprite;
     }
 
     update(playerY: number): void {

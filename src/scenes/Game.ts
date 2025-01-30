@@ -1,3 +1,4 @@
+// src/scenes/Game.ts
 import { Scene } from 'phaser';
 import { Depths } from '../main';
 import { Enemy } from '../objects/Enemy';
@@ -6,8 +7,8 @@ import { Player } from '../objects/Player';
 
 export class Game extends Scene {
     enemies: Enemy[] = [];
-
     private destroyedPiles: number = 0;
+
     private readonly piles: Pile[] = [];
 
     private soundtrack: Phaser.Sound.BaseSound;
@@ -145,5 +146,4 @@ export class Game extends Scene {
             }
         }
     }
-
 }

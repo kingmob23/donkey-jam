@@ -68,6 +68,15 @@ export class Preloader extends Scene {
     }
 
     create() {
-        // Этот метод не используется, так как переход к следующей сцене происходит в обработчике события 'complete'
+        const items = [
+            { key: 'trash', x: 200, y: 300 },
+            { key: 'fuel', x: 400, y: 300 },
+            { key: 'wire', x: 600, y: 300 },
+            { key: 'steam_pipe', x: 800, y: 300 },
+            { key: 'magnet', x: 1000, y: 300 },
+            { key: 'membrane', x: 1200, y: 300 },
+            { key: 'amplifier', x: 1400, y: 300 }
+        ];
+    
     }
 }

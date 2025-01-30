@@ -14,6 +14,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     private readonly monkeyState: MonkeyState;
 
+    private inventory: string[]; // Массив для хранения предметов
+
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'player');
         scene.physics.add.existing(this);
@@ -36,6 +38,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.shot = scene.sound.add('shot');
 
         this.monkeyState = new MonkeyState(scene, 100, scene.cameras.main.height - 100);
+
+
+        this.inventory = []; // Инициализация инвентаря
     }
 
     update(delta: number, bounds: { minX: number, maxX: number, minY: number, maxY: number }): boolean {
@@ -86,6 +91,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.flashTimer = 0;
         }
 
+        // Подбор предметов по нажатию на E
+        const eKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        if (eKey.isDown) {
+            this.pickUpItems();
+        }
+
         return false;
     }
 
@@ -102,5 +113,30 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.shot.stop();  // Stop any playing sounds
             this.emit('playerDead');
         }
+    }
+
+    // Метод для добавления предмета в инвентарь
+    public addItemToInventory(itemKey: string): void {
+        this.inventory.push(itemKey);
+        console.log(`Item added to inventory: ${itemKey}`);
+        console.log("Player's Inventory:", this.inventory.join(', '));
+    }
+
+    // Метод для подбора предметов
+    private pickUpItems() {
+        const playerBounds = this.getBounds();
+        const items = this.scene.children.getChildren().filter(child => {
+            return child instanceof Phaser.GameObjects.Image
+                && child.active
+                && ['fuel', 'wire', 'steam_pipe', 'magnet', 'membrane', 'amplifier'].includes(child.texture?.key);
+        }) as Phaser.GameObjects.Image[];
+
+        items.forEach(item => {
+            const itemBounds = item.getBounds();
+            if (Phaser.Geom.Intersects.RectangleToRectangle(playerBounds, itemBounds)) {
+                this.addItemToInventory(item.texture.key);
+                item.destroy();
+            }
+        });
     }
 }
