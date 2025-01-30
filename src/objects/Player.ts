@@ -27,7 +27,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.body?.setSize(this.width, this.height);
 
         this.ak = scene.add.image(this.x - 300, this.y, 'ak');
-        this.ak.setScale(0.7);
+
         this.ak.setDepth(Depths.Player);
 
         this.bang = scene.add.image(this.x, this.y, 'bang');

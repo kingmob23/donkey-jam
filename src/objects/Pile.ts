@@ -36,7 +36,7 @@ export class Pile {
             const { x, y } = this.getPosition();
             this.dropSprite = this.sprite.scene.add.image(x, y, this.drop);
             this.dropSprite.setDepth(Depths.Player - 1);
-            this.dropSprite.setScale(0.4);
+            this.dropSprite.setScale(0.7);
             this.dropSprite.setName(this.drop);
             this.dropSprite.setVisible(true);
             this.dropSprite.setActive(true);
