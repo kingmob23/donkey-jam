@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { Depths } from '../main';
 import { Enemy } from '../objects/Enemy';
 import { Pile } from '../objects/Pile';
 import { Player } from '../objects/Player';
@@ -29,18 +30,18 @@ export class Game extends Scene {
         this.sound.setVolume(0.4);
 
         this.background = this.add.image(1920 / 2, 1080 - 839 / 2, 'background');
-        this.background.setDepth(-1);
+        this.background.setDepth(Depths.Background);
 
         this.midground = this.add.image(1920 / 2, 1080 - 766 / 2, 'midground');
-        this.midground.setDepth(-1);
+        this.midground.setDepth(Depths.Midground);
 
         this.foreground = this.add.image(1920 / 2, 1080 - 159 / 2, 'foreground');
-        this.foreground.setDepth(10);
+        this.foreground.setDepth(Depths.Foreground);
 
         this.soundtrack = this.sound.add('sountrack');
         this.soundtrack.play({ loop: true, volume: 0.1 });
 
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 10; i++) {
             this.piles.push(new Pile(this, {
                 width: this.cameras.main.width,
                 height: this.cameras.main.height
@@ -59,7 +60,7 @@ export class Game extends Scene {
             color: '#ff0000'
         });
         this.msg_text.setOrigin(0.5);
-        this.msg_text.setDepth(5);
+        this.msg_text.setDepth(Depths.Text);
         this.msg_text.setVisible(false);
 
     }

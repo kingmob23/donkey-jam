@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-
+import { Depths } from '../main';
 export class MonkeyState {
     private static readonly STATES = {
         HEALTHY: 0,
@@ -24,6 +24,7 @@ export class MonkeyState {
         stateSprites.forEach(({ key }) => {
             const sprite = scene.add.image(x, y, key);
             sprite.setScale(0.5);
+            sprite.setDepth(Depths.UI);
             sprite.setVisible(false);
             this.sprites.push(sprite);
         });

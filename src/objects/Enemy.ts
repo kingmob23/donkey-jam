@@ -1,9 +1,10 @@
 // src/objects/Enemy.ts
 import { Scene } from 'phaser';
+import { Depths } from '../main';
 import { Player } from './Player';
 
 export class Enemy extends Phaser.GameObjects.Image {
-    private readonly player: Phaser.GameObjects.Image;
+    private readonly player: Player;
     private readonly speed: number = 60;
     private readonly attackRange: number = 100;
     private readonly attackCooldown: number = 2000;
@@ -16,14 +17,14 @@ export class Enemy extends Phaser.GameObjects.Image {
         super(scene, x, y, 'raider');
         this.player = player;
 
-        this.setDepth(2);
+        this.setDepth(Depths.Enemy);
         scene.add.existing(this);
 
         // Setup attack effect
         this.bang = scene.add.image(x, y, 'bang');
         this.bang.setScale(0.5);
         this.bang.setAlpha(0);
-        this.bang.setDepth(1);
+        this.bang.setDepth(Depths.Enemy);
     }
 
     update(time: number, delta: number) {

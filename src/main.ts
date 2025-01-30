@@ -25,4 +25,16 @@ const config: Types.Core.GameConfig = {
     ]
 };
 
+export enum Depths {
+    Background = -2,
+    Midground = -1,
+    Default = 0,
+    Piles = 1,
+    Enemy = 2,
+    Player = 3,
+    Foreground = 8,
+    UI = 9,
+    Text = 10
+}
+
 export default new Game(config);

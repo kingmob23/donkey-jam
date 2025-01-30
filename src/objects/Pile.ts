@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-
+import { Depths } from '../main';
 type PileDrop = 'trash' | 'fuel' | 'wire' | 'steam_pipe' | 'magnet' | 'membrane' | 'amplifier';
 
 export class Pile {
@@ -17,7 +17,7 @@ export class Pile {
 
         this.sprite = scene.add.image(x, y, randomSprite);
         this.sprite.setScale(0.4);
-        this.sprite.setDepth(1);
+        this.sprite.setDepth(Depths.Piles);
 
         this.drop = Phaser.Math.RND.pick(Pile.DROPS);
     }
@@ -36,7 +36,7 @@ export class Pile {
         if (!this.dropSprite) {
             const { x, y } = this.getPosition();
             this.dropSprite = this.sprite.scene.add.image(x, y, this.drop);
-            this.dropSprite.setDepth(1);
+            this.dropSprite.setDepth(Depths.Piles);
         }
     }
 
