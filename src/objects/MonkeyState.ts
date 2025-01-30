@@ -11,8 +11,24 @@ export class MonkeyState {
 
     private currentState: number = MonkeyState.STATES.HEALTHY;
     private sprites: Phaser.GameObjects.Image[] = [];
+    private circle: Phaser.GameObjects.Graphics;
+    private readonly CIRCLE_RADIUS = 88;
+
+    private drawCircle(x: number, y: number): void {
+        this.circle.clear();
+        this.circle.fillStyle(0xb85149);
+        this.circle.beginPath();
+        this.circle.arc(x, y, this.CIRCLE_RADIUS, 0, Math.PI * 2);
+        this.circle.closePath();
+        this.circle.fillPath();
+    }
 
     constructor(scene: Scene, x: number, y: number) {
+        this.circle = scene.add.graphics();
+        this.circle.setDepth(Depths.UI);
+
+        this.drawCircle(x, y);
+
         const stateSprites = [
             { key: 'healthy', state: MonkeyState.STATES.HEALTHY },
             { key: 'owtch1', state: MonkeyState.STATES.OWTCH1 },
@@ -23,7 +39,7 @@ export class MonkeyState {
 
         stateSprites.forEach(({ key }) => {
             const sprite = scene.add.image(x, y, key);
-            sprite.setScale(0.5);
+            sprite.setScale(0.7);
             sprite.setDepth(Depths.UI);
             sprite.setVisible(false);
             this.sprites.push(sprite);
@@ -50,6 +66,8 @@ export class MonkeyState {
     }
 
     setPosition(x: number, y: number): void {
+        this.drawCircle(x, y);
+
         this.sprites.forEach(sprite => {
             sprite.setPosition(x, y);
         });

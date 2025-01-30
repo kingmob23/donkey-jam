@@ -6,7 +6,7 @@ import { Player } from '../objects/Player';
 
 export class Game extends Scene {
     private destroyedPiles: number = 0;
-    private piles: Pile[] = [];
+    private readonly piles: Pile[] = [];
 
     private soundtrack: Phaser.Sound.BaseSound;
 
@@ -48,8 +48,9 @@ export class Game extends Scene {
             }));
         }
 
-        this.player = new Player(this, this.cameras.main.width + 100, this.cameras.main.height - 150);
-        this.enemy = new Enemy(this, this.cameras.main.width - 100, this.cameras.main.height - 100, this.player);
+        this.player = new Player(this, this.cameras.main.width / 2, this.cameras.main.height / 2);
+
+        this.enemy = new Enemy(this, Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), this.player);
 
         this.player.on('playerDead', () => {
             this.scene.start('GameOver');
@@ -63,14 +64,23 @@ export class Game extends Scene {
         this.msg_text.setDepth(Depths.Text);
         this.msg_text.setVisible(false);
 
+        this.time.addEvent({
+            delay: 30000,
+            callback: () => {
+                this.enemy = new Enemy(this, Phaser.Math.Between(0, this.cameras.main.width), Phaser.Math.Between(0, this.cameras.main.height), this.player);
+            },
+            loop: true
+        });
     }
 
     update(time: number, delta: number) {
+
+
         const bounds = {
-            minX: 0,
-            maxX: this.cameras.main.width,
-            minY: 0,
-            maxY: this.cameras.main.height
+            minX: 50,
+            maxX: this.cameras.main.width - 50,
+            minY: 50,
+            maxY: this.cameras.main.height - 150
         };
 
         // Update player and check if bang appeared

@@ -45,6 +45,9 @@ export class Preloader extends Scene {
 
         this.load.setPath('assets/raiders');
         this.load.image('raider', 'raider.png');
+        this.load.image('raider_attack', 'raider_attack.png');
+        this.load.image('raider1', 'raider1.png');
+        this.load.image('raider_attack1', 'raider_attack1.png');
 
         this.load.setPath('assets/pile');
         this.load.image('pile', 'pile.png');

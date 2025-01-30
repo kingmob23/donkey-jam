@@ -7,20 +7,26 @@ export class Enemy extends Phaser.GameObjects.Image {
     private readonly player: Player;
     private readonly speed: number = 60;
     private readonly attackRange: number = 100;
-    private readonly attackCooldown: number = 2000;
+    private readonly attackCooldown: number = 1000;
+    private static readonly SPRITES = [['raider', 'raider_attack'], ['raider1', 'raider_attack1']];
     private readonly bang: Phaser.GameObjects.Image;
+
+    private readonly currentSpriteSet: string[];
+    private spriteUpdateTime: number = 0;
+    private readonly spriteUpdateInterval: number = 500;
 
     private lastAttackTime: number = 0;
     private health: number = 3;
 
     constructor(scene: Scene, x: number, y: number, player: Player) {
-        super(scene, x, y, 'raider');
+        const randomSpriteSet = Phaser.Math.RND.pick(Enemy.SPRITES);
+        super(scene, x, y, randomSpriteSet[0]);
+        this.currentSpriteSet = randomSpriteSet;
         this.player = player;
 
         this.setDepth(Depths.Enemy);
         scene.add.existing(this);
 
-        // Setup attack effect
         this.bang = scene.add.image(x, y, 'bang');
         this.bang.setScale(0.5);
         this.bang.setAlpha(0);
@@ -28,7 +34,17 @@ export class Enemy extends Phaser.GameObjects.Image {
     }
 
     update(time: number, delta: number) {
-        if (!this.visible) return;  // Skip update if dead
+        if (!this.visible) return;
+
+        if (time > this.spriteUpdateTime) { // TODO: probably will flex even when standing still
+            const currentTexture = this.texture.key;
+            const nextTexture = currentTexture === this.currentSpriteSet[0]
+                ? this.currentSpriteSet[1]
+                : this.currentSpriteSet[0];
+
+            this.setTexture(nextTexture);
+            this.spriteUpdateTime = time + this.spriteUpdateInterval;
+        }
 
         // Move towards player
         const dx = this.player.x - this.x;
@@ -41,6 +57,11 @@ export class Enemy extends Phaser.GameObjects.Image {
             const vy = Math.sin(angle) * this.speed * (delta / 1000);
             this.x += vx;
             this.y += vy;
+
+            // Flip based on movement direction
+            // If vx is positive, enemy is moving right -> flip
+            // If vx is negative, enemy is moving left -> don't flip
+            this.setFlipX(vx > 0);
         }
 
         // Attack if in range

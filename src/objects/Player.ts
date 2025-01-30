@@ -12,10 +12,7 @@ export class Player extends Phaser.GameObjects.Image {
     private flashInterval: number = 200;
     private flashTimer: number = 0;
 
-    private canHitEnemy: boolean = true;
     private monkeyState: MonkeyState;
-    private hitCount: number = 0;
-    private maxHitsBeforeDeath: number = 5;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'player');
@@ -34,7 +31,7 @@ export class Player extends Phaser.GameObjects.Image {
 
         this.shot = scene.sound.add('shot');
 
-        this.monkeyState = new MonkeyState(scene, 80, 80);
+        this.monkeyState = new MonkeyState(scene, 100, scene.cameras.main.height - 100);
     }
 
     update(delta: number, bounds: { minX: number, maxX: number, minY: number, maxY: number }): boolean {
@@ -43,12 +40,14 @@ export class Player extends Phaser.GameObjects.Image {
             if (newX >= bounds.minX) {
                 this.x = newX;
             }
+            this.setFlipX(false);
         }
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT).isDown) {
             const newX = this.x + this.speed * delta / 1000;
             if (newX <= bounds.maxX) {
                 this.x = newX;
             }
+            this.setFlipX(true);
         }
         if (this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP).isDown) {
             const newY = this.y - this.speed * delta / 1000;
